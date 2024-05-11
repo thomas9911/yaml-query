@@ -1,21 +1,49 @@
 # YamlQuery
 
-**TODO: Add description**
+YamlQuery provides a simple way to execute JQL queries on yaml files.
 
-## Installation
+See https://github.com/yamafaktory/jql for documentation on jql syntax.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `yaml_query` to your list of dependencies in `mix.exs`:
+## Functions
+
+### from_file(path, query)
+
+@spec from_file(path :: binary(), query :: binary()) ::
+{:ok, term()} | {:error, atom() | binary()}
+
+Execute a jql query on the given yaml file.
+
+### query(yaml, query)
+
+@spec query(yaml :: binary(), query :: binary() | charlist()) ::
+{:ok, term()} | {:error, binary()}
+
+Execute a jql query on the given yaml string.
 
 ```elixir
-def deps do
-  [
-    {:yaml_query, "~> 0.1.0"}
-  ]
-end
+yaml = """
+
+test:
+
+  nested: 'test'
+
+"""
+
+YamlQuery.query(yaml, ~S|"test""nested"|)
+{:ok, "test"}
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/yaml_query>.
+Also support for single quotes, so bash queries can be copied over.
 
+```elixir
+yaml = """
+
+test:
+
+  nested: 'test'
+
+"""
+
+YamlQuery.query(yaml, '"test""nested"')
+{:ok, "test"}
+```
